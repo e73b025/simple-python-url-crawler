@@ -74,6 +74,8 @@ class SiteUrlCrawler:
             self.found_urls.append(url)
             self.urls_to_search.append(url)
 
+            self.log("Found URL \"" + url + "\".")
+
         self.found_url_lock.release()
 
     def log(self, message):
@@ -156,8 +158,6 @@ class CrawlerThread(threading.Thread):
                 self.site_crawler.found_url(a_href)
             else:
                 found_urls.append(a_href)
-
-            self.log("Found URL \"" + a_href + "\".")
 
         return found_urls
 
