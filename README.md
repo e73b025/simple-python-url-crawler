@@ -1,6 +1,6 @@
 ## Description
 
-Super simple multi-thread site URL crawler. Returns a Python array of all found URLs.
+A super simple multi-threaded website internal URL crawler. Returns a Python array of all found URLs.
 
 ## Dependencies
 
