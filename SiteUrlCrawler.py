@@ -1,3 +1,5 @@
+from enum import Enum
+
 import requests
 import threading
 
@@ -6,15 +8,21 @@ from bs4 import BeautifulSoup
 
 
 class SiteUrlCrawler:
-    def __init__(self, base_url, max_threads=10, allow_printing=False):
+    class Mode(Enum):
+        ALL = 0
+        INTERNAL = 1
+        EXTERNAL = 2
+
+    def __init__(self, site_base_url, max_threads=10, logging_enabled=False):
         """
         Constructor for SiteCrawler.
-        :param base_url:
+        :param site_base_url:
         :param max_threads:
-        :param allow_printing:
+        :param logging_enabled:
         """
-        self.site_base_url = base_url
-        self.logging_enabled = allow_printing
+        self.site_base_url = site_base_url
+        self.logging_enabled = logging_enabled
+        self.mode = self.Mode.ALL.value
 
         self.max_threads = max_threads
         self.thread_pool = []
@@ -24,17 +32,19 @@ class SiteUrlCrawler:
         self.urls_to_search = list()
         self.found_urls = []
 
-    def crawl(self):
+    def crawl(self, mode=None):
         """
         Begins the crawling process.
         :return:
         """
+        self.mode = self.Mode.ALL if mode is None else mode
+
         # Build initial starting point URLs to crawl
-        for url in CrawlerThread(self).find_all_urls_on_page(self.site_base_url, False):
+        for url in CrawlerThread(self, self.mode).find_all_urls_on_page(self.site_base_url, False):
             self.found_url(url)
 
         while len(self.thread_pool) < self.max_threads:
-            thread = CrawlerThread(self)
+            thread = CrawlerThread(self, self.mode)
             self.thread_pool.append(thread)
             self.log("Creating new thread, " + thread.getName())
 
@@ -45,6 +55,8 @@ class SiteUrlCrawler:
         [t.join() for t in self.thread_pool]
 
         self.log("All threads completed.")
+
+        self.thread_pool.clear()
 
         return self.found_urls
 
@@ -89,13 +101,15 @@ class SiteUrlCrawler:
 
 
 class CrawlerThread(threading.Thread):
-    def __init__(self, site_crawler):
+    def __init__(self, site_crawler, mode):
         """
         Constructor for worker thread.
         :param site_crawler:
+        :param mode:
         """
         super(CrawlerThread, self).__init__()
         self.site_crawler = site_crawler
+        self.mode = mode
 
     def run(self) -> None:
         """
@@ -110,6 +124,10 @@ class CrawlerThread(threading.Thread):
             self.site_crawler.urls_to_search_lock.release()
 
             if url is None:
+                break
+
+            if self.is_internal_url(url) is False:
+                self.log("Skipping URL \"" + url + "\" cause its external and we dont want to index the internet.")
                 break
 
             self.log("Checking URL \"" + url + "\".")
@@ -144,8 +162,14 @@ class CrawlerThread(threading.Thread):
                 a_href = urljoin(self.site_crawler.site_base_url, a_href)
 
             # If its an external url, skip it
-            if self.site_crawler.site_base_url not in a_href:
-                continue
+            if self.mode == SiteUrlCrawler.Mode.INTERNAL:
+                if not self.is_internal_url(a_href):
+                    continue
+            elif self.mode == SiteUrlCrawler.Mode.EXTERNAL:
+                if self.is_internal_url(a_href):
+                    continue
+            elif self.mode == SiteUrlCrawler.Mode.ALL:
+                pass
 
             # Clean the url
             url_parts = urlparse(a_href)
@@ -160,6 +184,14 @@ class CrawlerThread(threading.Thread):
                 found_urls.append(a_href)
 
         return found_urls
+
+    def is_internal_url(self, url):
+        """
+        Checks if a URL is internal or external pointing.
+        :param url:
+        :return:
+        """
+        return self.site_crawler.site_base_url in url
 
     def log(self, message):
         """
