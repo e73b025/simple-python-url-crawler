@@ -39,12 +39,15 @@ Found: https://strongscot.com/
 Found: https://strongscot.com/projects/
 Found: https://strongscot.com/cv/
 Found: https://strongscot.com/contact/
+Found: https://github.com/strongscot
+Found: https://twitter.com/thestrongscot
 Found: https://strongscot.com/blog/20/03/03/simple-site-crawler.html
 Found: https://strongscot.com/blog/20/02/19/birthday.html
 Found: https://strongscot.com/blog/19/12/09/new-site.html
 Found: https://strongscot.com/blog/19/09/09/body-goals.html
 Found: https://strongscot.com/blog/19/09/09/cool-dropdown-ui.html
 Found: https://strongscot.com/blog/19/09/09/flying-in-a-flight-machine.html
+Found: https://github.com/strongscot/simple-python-url-crawler
 ```
 
 ### Find Only Internal URLs
@@ -65,6 +68,13 @@ crawler = SiteUrlCrawler("https://strongscot.com", 5, False)
 # Print the found URLs
 for url in crawler.crawl(SiteUrlCrawler.Mode.EXTERNAL):
     print("Found: " + url)
+```
+
+Will output:
+
+```
+Found: https://github.com/strongscot
+Found: https://twitter.com/thestrongscot
 ```
 
 
