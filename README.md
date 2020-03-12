@@ -20,10 +20,9 @@ The following code sample will scan site "strongscot.com", using 5 threads and o
 
 ```
     crawler = SiteUrlCrawler("https://strongscot.com", 5, True)
-    found_urls = crawler.crawl()
-    
+
     # Print the found URLs
-    for url in found_urls:
+    for url in crawler.crawl():
         print("Found: " + url)
 ```
 
