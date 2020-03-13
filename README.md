@@ -3,8 +3,6 @@
 A super simple multi-threaded website URL crawler. Returns a Python array of all found URLs. It can be configured to
 return either internal urls, external urls or both.
 
-**Please Note:** This does **NOT** attempt to crawl external URLs, this isn't Google.
-
 ## Dependencies
 
 - pip install requests
