@@ -31,13 +31,15 @@ class SiteUrlCrawler:
 
         self.urls_to_search = list()
         self.found_urls = []
+        self.callback = None
 
-    def crawl(self, mode=None):
+    def crawl(self, mode=None, callback=None):
         """
         Begins the crawling process.
         :return:
         """
         self.mode = self.Mode.ALL if mode is None else mode
+        self.callback = callback
 
         # Build initial starting point URLs to crawl
         for url in CrawlerThread(self, self.mode).find_all_urls_on_page(self.site_base_url, False):
@@ -87,6 +89,9 @@ class SiteUrlCrawler:
             self.urls_to_search.append(url)
 
             self.log("Found URL \"" + url + "\".")
+
+            if self.callback is not None:
+                self.callback(url)
 
         self.found_url_lock.release()
 
@@ -144,6 +149,10 @@ class CrawlerThread(threading.Thread):
         """
         found_urls = []
 
+        # Only operate on pages with a content-type header
+        if requests.head(url).headers.get('content-type') is None:
+            return found_urls
+
         # Only handle HTML files
         if "text/html" not in requests.head(url).headers.get('content-type'):
             return found_urls
@@ -159,7 +168,10 @@ class CrawlerThread(threading.Thread):
 
             # If the url is relative, make it absolute
             if a_href[0] == '/':
-                a_href = urljoin(self.site_crawler.site_base_url, a_href)
+                a_href = urljoin(url, a_href)
+
+            if a_href[:a_href.find(":")] not in ("http", "https"):
+                continue
 
             # If its an external url, skip it
             if self.mode == SiteUrlCrawler.Mode.INTERNAL:

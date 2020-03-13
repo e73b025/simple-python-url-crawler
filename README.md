@@ -16,6 +16,7 @@ return either internal urls, external urls or both.
 - Multi-threaded.
 - Enable or disable logging.
 - Can return internal, external or both URLs.
+- Can provide optional callback method for LIVE URL finds.
 - Not much else.
 
 ## Usage
@@ -53,7 +54,7 @@ Found: https://github.com/strongscot/simple-python-url-crawler
 ### Find Only Internal URLs
 
 ```
-crawler = SiteUrlCrawler("https://strongscot.com", 5, False)
+crawler = SiteUrlCrawler("https://strongscot.com")
 
 # Print the found URLs
 for url in crawler.crawl(SiteUrlCrawler.Mode.INTERNAL):
@@ -63,7 +64,7 @@ for url in crawler.crawl(SiteUrlCrawler.Mode.INTERNAL):
 ### Find Only External URLs
 
 ```
-crawler = SiteUrlCrawler("https://strongscot.com", 5, False)
+crawler = SiteUrlCrawler("https://strongscot.com")
 
 # Print the found URLs
 for url in crawler.crawl(SiteUrlCrawler.Mode.EXTERNAL):
@@ -77,6 +78,24 @@ Found: https://github.com/strongscot
 Found: https://twitter.com/thestrongscot
 ```
 
+## Using Callback (getting live URL finds as they happen)
+
+If you wish to get each URL as it is found rather than at the end in an array, you can pass an optional argument to the
+``crawl()`` method that will do exactly that. For example:
+
+```
+crawler = SiteUrlCrawler("https://strongscot.com")
+
+def callback(url):
+    print("Found: " + url)
+
+# Get ALL urls and print them
+crawler.crawl(SiteUrlCrawler.Mode.ALL, callback)
+```
+
+## Bad-Tip
+
+Want to make it a small Google Bot? Comment-out lines ``134`` - ``136`` and it will trawl even external links.
 
 ## Author
 
