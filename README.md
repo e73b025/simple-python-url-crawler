@@ -95,7 +95,7 @@ crawler.crawl(SiteUrlCrawler.Mode.ALL, callback)
 
 ## Bad-Tip
 
-Want to make it a small Google Bot? Comment-out lines ``134`` - ``136`` and it will trawl even external links.
+Want to make it a small Google Bot? Comment-out lines ``134`` - ``136`` in file ``SiteUrlCrawler.py`` and it will trawl even external links.
 
 ## Author
 
