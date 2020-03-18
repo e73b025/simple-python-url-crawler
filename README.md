@@ -23,7 +23,7 @@ The following code sample will scan site "strongscot.com", using 5 threads and h
 
 ### Find Internal and External URLs
 
-```
+```python
 crawler = SiteUrlCrawler("https://strongscot.com", 5, False)
 
 # Print the found URLs
@@ -51,7 +51,7 @@ Found: https://github.com/strongscot/simple-python-url-crawler
 
 ### Find Only Internal URLs
 
-```
+```python
 crawler = SiteUrlCrawler("https://strongscot.com")
 
 # Print the found URLs
@@ -61,7 +61,7 @@ for url in crawler.crawl(SiteUrlCrawler.Mode.INTERNAL):
 
 ### Find Only External URLs
 
-```
+```python
 crawler = SiteUrlCrawler("https://strongscot.com")
 
 # Print the found URLs
@@ -81,7 +81,7 @@ Found: https://twitter.com/thestrongscot
 If you wish to get each URL as it is found rather than at the end in an array, you can pass an optional argument to the
 ``crawl()`` method that will do exactly that. For example:
 
-```
+```python
 crawler = SiteUrlCrawler("https://strongscot.com")
 
 def callback(url):
