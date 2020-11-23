@@ -39,7 +39,6 @@ Found: https://strongscot.com/projects/
 Found: https://strongscot.com/cv/
 Found: https://strongscot.com/contact/
 Found: https://github.com/strongscot
-Found: https://twitter.com/thestrongscot
 Found: https://strongscot.com/blog/20/03/03/simple-site-crawler.html
 Found: https://strongscot.com/blog/20/02/19/birthday.html
 Found: https://strongscot.com/blog/19/12/09/new-site.html
