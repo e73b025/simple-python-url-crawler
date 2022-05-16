@@ -21,6 +21,7 @@ class SiteUrlCrawler:
         :param logging_enabled:
         """
         self.site_base_url = site_base_url
+        self.site_hostname = urlparse(site_base_url).hostname
         self.logging_enabled = logging_enabled
         self.mode = self.Mode.ALL.value
 
@@ -203,7 +204,7 @@ class CrawlerThread(threading.Thread):
         :param url:
         :return:
         """
-        return self.site_crawler.site_base_url in url
+        return self.site_crawler.site_hostname in url
 
     def log(self, message):
         """
